@@ -1,0 +1,8 @@
+{% extends "base.html" %}
+{% block title %}My orders – {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<section class="wrap section">
+  <h1>My orders</h1>
+  {% include "orders/_table.html" with orders=orders empty="No orders yet." %}
+</section>
+{% endblock %}

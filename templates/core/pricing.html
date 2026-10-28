@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% load money %}
+{% block title %}Pricing – {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<section class="wrap section">
+  <h1>Pricing</h1>
+  <p class="muted">Pay per activation, only when you get a code. Prices differ by country and service; every price is shown in USD and PKR before you confirm.</p>
+  {% for s in sections %}
+  <div class="sec-head"><h2>{{ s.country.name }} – trending services</h2><a href="{% url 'buy' %}?country={{ s.country.id }}">All services →</a></div>
+  <div class="table-wrap"><table class="table">
+    <thead><tr><th>Service</th><th class="r">Price</th></tr></thead>
+    <tbody>{% for p in s.rows %}<tr><td>{{ p.name }}</td><td class="r nowrap">{{ p.price|money }}</td></tr>{% endfor %}</tbody>
+  </table></div>
+  {% endfor %}
+</section>
+{% endblock %}

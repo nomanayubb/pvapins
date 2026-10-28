@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+{% load money %}
+{% block content %}
+<section class="hero">
+  <div class="wrap hero-in">
+    <div>
+      <h1>Virtual phone numbers with <span class="accent">inbound SMS</span>, in 200+ countries</h1>
+      <p class="lead">Create a free account, add funds with crypto, pick a country and a service, and get your OTP in seconds. Rent private numbers when you need repeat codes.</p>
+      <div class="btn-row">
+        <a class="btn" href="{% if user.is_authenticated %}{% url 'buy' %}{% else %}{% url 'register' %}{% endif %}">{% if user.is_authenticated %}Buy a number{% else %}Create account{% endif %}</a>
+        <a class="btn btn-ghost" href="{% url 'pricing' %}">View pricing</a>
+      </div>
+      <ul class="ticks">
+        <li><b>No code, no pay</b><span>Cancel and get refunded if a code doesn't arrive.</span></li>
+        <li><b>Secure payments</b><span>Top up your wallet with crypto.</span></li>
+        <li><b>Built for speed</b><span>Numbers issued in seconds.</span></li>
+      </ul>
+    </div>
+    <div class="phone-card">
+      <div class="phone-head">Numbers live in seconds</div>
+      <div class="phone-row"><span>🇺🇸 United States</span><b>+1 555 010 2481</b></div>
+      <div class="phone-row"><span>🇬🇧 United Kingdom</span><b>+44 7700 900 318</b></div>
+      <div class="phone-row"><span>🇨🇦 Canada</span><b>+1 604 555 0187</b></div>
+      <div class="phone-sms">New message · <b>Your code is 418494</b></div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap section">
+  <h2>How it works</h2>
+  <div class="grid3">
+    <div class="card step"><span>1</span><h3>Create account</h3><p>Free signup in seconds.</p></div>
+    <div class="card step"><span>2</span><h3>Add funds &amp; choose</h3><p>Top up with crypto, then pick a country and service.</p></div>
+    <div class="card step"><span>3</span><h3>Receive OTP</h3><p>The code appears live in your dashboard.</p></div>
+  </div>
+</section>
+
+{% if trending %}
+<section class="wrap section">
+  <div class="sec-head"><h2>🔥 Trending in USA</h2><a href="{% url 'buy' %}?country=58&trending=1">See all →</a></div>
+  <div class="chips">
+    {% for p in trending %}
+    <a class="chip" href="{% url 'buy' %}?country=58&q={{ p.name|urlencode }}"><b>{{ p.name }}</b><span>{{ p.price|money }}</span></a>
+    {% endfor %}
+  </div>
+</section>
+{% endif %}
+
+{% if countries %}
+<section class="wrap section">
+  <div class="sec-head"><h2>Popular countries</h2><a href="{% url 'countries' %}">View all countries →</a></div>
+  <div class="chips">
+    {% for c in countries %}<a class="chip" href="{% url 'buy' %}?country={{ c.id }}"><b>{{ c.name }}</b></a>{% endfor %}
+  </div>
+</section>
+{% endif %}
+
+<section class="wrap section">
+  <h2>Pick your route</h2>
+  <div class="grid3">
+    <div class="card"><h3>Activations</h3><p>One-time verification. Pay per code, only when it arrives.</p><a class="btn btn-sm" href="{% url 'buy' %}">Buy numbers</a></div>
+    <div class="card"><h3>Rentals</h3><p>Keep a private number for repeat codes over days.</p><a class="btn btn-sm" href="{% url 'rent' %}">Rent numbers</a></div>
+    <div class="card"><h3>Pay with crypto</h3><p>Fund your wallet once, buy any product with the balance.</p><a class="btn btn-sm" href="{% url 'wallet' %}">Add funds</a></div>
+  </div>
+</section>
+{% endblock %}

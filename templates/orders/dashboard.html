@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+{% load money %}
+{% block title %}Dashboard – {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<section class="wrap section">
+  <h1>Welcome, {{ user.username }}</h1>
+  <div class="grid3">
+    <div class="card"><div class="muted">Balance</div><div class="big">{{ nav_balance|usd }}</div><div class="muted">≈ {{ nav_balance|pkr }}</div><a class="btn btn-sm" href="{% url 'wallet' %}">Add funds</a></div>
+    <div class="card"><div class="muted">Orders</div><div class="big">{{ total_orders }}</div><a class="btn btn-sm btn-ghost" href="{% url 'orders' %}">All orders</a></div>
+    <div class="card"><div class="muted">Total spent</div><div class="big">{{ spent|usd }}</div><div class="muted">≈ {{ spent|pkr }}</div></div>
+  </div>
+  <div class="btn-row"><a class="btn" href="{% url 'buy' %}">Buy a number</a><a class="btn btn-ghost" href="{% url 'rent' %}">Rent a number</a></div>
+
+  <h2>Waiting for code</h2>
+  {% include "orders/_table.html" with orders=active empty="No active orders." %}
+  <h2>Recent orders</h2>
+  {% include "orders/_table.html" with orders=recent empty="No orders yet." %}
+</section>
+{% endblock %}

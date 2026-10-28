@@ -1,0 +1,48 @@
+{% extends "base.html" %}
+{% load money %}
+{% block title %}Wallet – {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<section class="wrap section">
+  <h1>Wallet</h1>
+  {% if paid %}<div class="alert alert-info">Thanks! Your balance updates automatically as soon as the network confirms your payment (usually a few minutes).</div>{% endif %}
+  <div class="grid2">
+    <div class="card">
+      <div class="muted">Available balance</div>
+      <div class="big">{{ nav_balance|usd }}</div>
+      <div class="muted">≈ {{ nav_balance|pkr }}</div>
+    </div>
+    <div class="card">
+      <h3>Add funds with crypto</h3>
+      <form method="post" action="{% url 'deposit' %}">{% csrf_token %}
+        <div class="chips">
+          {% for p in presets %}<button type="button" class="chip" onclick="document.getElementById('amt').value='{{ p }}'"><b>${{ p }}</b><span>{{ p|pkr }}</span></button>{% endfor %}
+        </div>
+        <label>Amount (USD, min ${{ min_deposit }})
+          <input id="amt" type="number" name="amount" min="{{ min_deposit }}" step="0.01" required placeholder="10.00">
+        </label>
+        <button class="btn block">Pay with crypto</button>
+        <p class="muted small">You'll choose BTC, USDT, ETH, LTC and more on the secure payment page. Credited in USD after confirmation.</p>
+      </form>
+    </div>
+  </div>
+
+  <h2>Recent payments</h2>
+  <div class="table-wrap"><table class="table">
+    <thead><tr><th>Date</th><th class="r">Amount</th><th>Status</th><th></th></tr></thead>
+    <tbody>{% for d in deposits %}
+      <tr><td>{{ d.created|date:"d M Y H:i" }}</td><td class="r nowrap">{{ d.usd_amount|money }}</td>
+      <td><span class="badge {% if d.credited %}ok{% endif %}">{% if d.credited %}credited{% else %}{{ d.status }}{% endif %}</span></td>
+      <td class="r">{% if d.invoice_url and not d.credited and d.status == 'waiting' %}<a href="{{ d.invoice_url }}">Continue payment</a>{% endif %}</td></tr>
+    {% empty %}<tr><td colspan="4" class="muted center">No payments yet.</td></tr>{% endfor %}</tbody>
+  </table></div>
+
+  <h2>Transactions</h2>
+  <div class="table-wrap"><table class="table">
+    <thead><tr><th>Date</th><th>Type</th><th>Details</th><th class="r">Amount</th><th class="r">Balance</th></tr></thead>
+    <tbody>{% for t in transactions %}
+      <tr><td>{{ t.created|date:"d M H:i" }}</td><td>{{ t.get_kind_display }}</td><td>{{ t.note }}</td>
+      <td class="r nowrap {% if t.amount < 0 %}neg{% else %}pos{% endif %}">{{ t.amount|money }}</td><td class="r nowrap">{{ t.balance_after|usd }}</td></tr>
+    {% empty %}<tr><td colspan="5" class="muted center">No transactions yet.</td></tr>{% endfor %}</tbody>
+  </table></div>
+</section>
+{% endblock %}

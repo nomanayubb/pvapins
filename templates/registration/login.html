@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Log in – {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<section class="wrap section"><div class="card auth">
+  <h1>Log in</h1>
+  <form method="post">{% csrf_token %}
+    {{ form.non_field_errors }}
+    <label>Username{{ form.username }}{{ form.username.errors }}</label>
+    <label>Password{{ form.password }}{{ form.password.errors }}</label>
+    <input type="hidden" name="next" value="{{ next }}">
+    <button class="btn block">Log in</button>
+  </form>
+  <p class="muted center">No account? <a href="{% url 'register' %}">Sign up free</a></p>
+</div></section>
+{% endblock %}

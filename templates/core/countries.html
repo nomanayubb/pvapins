@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Receive SMS by country – {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<section class="wrap section">
+  <h1>Receive SMS by country</h1>
+  <form class="filters" method="get">
+    <label>Search country<input type="search" name="q" value="{{ q }}" placeholder="e.g. Malaysia"></label>
+    <button class="btn btn-sm">Search</button>
+  </form>
+  <div class="chips">
+    {% for c in items %}<a class="chip" href="{% url 'buy' %}?country={{ c.id }}"><b>{{ c.name }}</b></a>{% empty %}<p class="muted">No countries found.</p>{% endfor %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}FAQ – {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<section class="wrap section narrow">
+  <h1>Frequently asked questions</h1>
+  <details class="faq"><summary>How does {{ SITE_NAME }} work?</summary><p>Create an account, add funds to your wallet with crypto, choose a country and a service, and you receive a temporary number. The SMS code appears live on your order page.</p></details>
+  <details class="faq"><summary>What if my code does not arrive?</summary><p>Cancel the order from its page and the full price returns to your wallet. Orders that get no code before the timer ends are refunded automatically.</p></details>
+  <details class="faq"><summary>Is each number single-use?</summary><p>Activation numbers are for one verification. Shortly after a purchase you can re-use the same number for free from the order page (limited window, supported services only). For repeat codes over days, use <a href="{% url 'rent' %}">Rent</a>.</p></details>
+  <details class="faq"><summary>How do I add funds?</summary><p>Open your <a href="{% url 'wallet' %}">wallet</a>, enter an amount in USD, and pay with the crypto of your choice. Your balance updates automatically once the payment is confirmed on the network.</p></details>
+  <details class="faq"><summary>Which currencies are shown?</summary><p>Every price is shown in US dollars with the Pakistani rupee equivalent next to it. Your wallet balance is held in USD.</p></details>
+  <details class="faq"><summary>What is the difference between buying and renting?</summary><p>Buying gives a single-use number for one code. Renting keeps a private number for several days so you can receive repeat codes.</p></details>
+  <details class="faq"><summary>Is it safe and private?</summary><p>Yes. We never ask for your personal SIM or phone number. Follow local laws and each platform's terms when using verification numbers.</p></details>
+</section>
+{% endblock %}

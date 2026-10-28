@@ -1,0 +1,12 @@
+{% load money %}
+<div class="table-wrap"><table class="table">
+  <thead><tr><th>#</th><th>Service</th><th>Country</th><th>Number</th><th>Code</th><th>Status</th><th class="r">Price</th><th></th></tr></thead>
+  <tbody>{% for o in orders %}
+    <tr>
+      <td>{{ o.pk }}</td><td>{{ o.app_name }}{% if o.is_rent %} <span class="badge">rent</span>{% endif %}</td><td>{{ o.country_name }}</td>
+      <td class="nowrap">+{{ o.number }}</td><td><b>{{ o.otp|default:"–" }}</b></td>
+      <td><span class="badge st-{{ o.status }}">{{ o.get_status_display }}</span>{% if o.refunded %} <span class="badge">refunded</span>{% endif %}</td>
+      <td class="r nowrap">{{ o.price|money }}</td><td class="r"><a href="{% url 'order_detail' o.pk %}">Open</a></td>
+    </tr>
+  {% empty %}<tr><td colspan="8" class="muted center">{{ empty }}</td></tr>{% endfor %}</tbody>
+</table></div>

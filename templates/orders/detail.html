@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% load static money %}
+{% block title %}Order #{{ order.pk }} – {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<section class="wrap section narrow">
+  <p><a href="{% url 'orders' %}">← All orders</a></p>
+  <h1>{{ order.app_name }} <span class="muted">· {{ order.country_name }}{% if order.is_rent %} · rental{% endif %}</span></h1>
+
+  <div class="card order" id="order" data-status-url="{% url 'order_status' order.pk %}" data-status="{{ order.status }}" data-rent="{{ order.is_rent|yesno:'1,0' }}">
+    <div class="muted">Your number</div>
+    <div class="number" id="num">+{{ order.number }}</div>
+    <button class="btn btn-sm btn-ghost" type="button" onclick="navigator.clipboard.writeText('{{ order.number }}')">Copy number</button>
+
+    <div class="muted mt">Verification code</div>
+    <div class="otp" id="otp">{% if order.otp %}{{ order.otp }}{% else %}<span class="waiting">Waiting for SMS…</span>{% endif %}</div>
+    <div class="muted small" id="otp-msg">{{ order.message }}</div>
+
+    <div class="meta">
+      <span class="badge st-{{ order.status }}" id="status">{{ order.get_status_display }}</span>
+      <span id="timer" class="muted"></span>
+      <span class="muted">Paid {{ order.price|money }}</span>
+      <span id="refunded" class="badge ok" {% if not order.refunded %}hidden{% endif %}>refunded</span>
+    </div>
+
+    <div class="btn-row">
+      {% if order.status == 'active' %}
+      <form method="post" action="{% url 'order_reject' order.pk %}" onsubmit="return confirm('Cancel this order? You are refunded only if no code has arrived.')">{% csrf_token %}<button class="btn btn-ghost">{% if order.is_rent %}Release rental{% else %}Cancel &amp; refund{% endif %}</button></form>
+      {% endif %}
+      {% if can_reuse %}
+      <form method="post" action="{% url 'order_reuse' order.pk %}">{% csrf_token %}<button class="btn btn-ghost">Reuse number (free)</button></form>
+      {% endif %}
+      {% if order.is_rent and order.status != 'rejected' %}
+      <form method="post" action="{% url 'order_renew' order.pk %}" onsubmit="return confirm('Renew this rental? Your wallet will be charged.')">{% csrf_token %}<button class="btn">Renew</button></form>
+      {% endif %}
+    </div>
+  </div>
+
+  {% if order.is_rent %}
+  <h2>Messages</h2>
+  <div class="table-wrap"><table class="table"><thead><tr><th>From</th><th>Message</th><th>Time</th></tr></thead>
+    <tbody id="msgs">{% for m in order.messages %}<tr><td>{{ m.from }}</td><td>{{ m.message }}</td><td>{{ m.timestamp }}</td></tr>{% empty %}<tr><td colspan="3" class="muted center">No messages yet.</td></tr>{% endfor %}</tbody></table></div>
+  {% endif %}
+</section>
+{% endblock %}
+{% block scripts %}<script src="{% static 'js/order.js' %}"></script>{% endblock %}

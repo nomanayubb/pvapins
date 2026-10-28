@@ -1,0 +1,12 @@
+{% extends "base.html" %}
+{% block title %}Contact – {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<section class="wrap section narrow">
+  <h1>Contact support</h1>
+  <p>Questions about an order, a payment or your account? Reach us and include your username and order number.</p>
+  <div class="card">
+    <p><b>Email:</b> <a href="mailto:{{ SUPPORT_EMAIL }}">{{ SUPPORT_EMAIL }}</a></p>
+    {% if SUPPORT_TELEGRAM %}<p><b>Telegram:</b> <a href="{{ SUPPORT_TELEGRAM }}" rel="noopener">{{ SUPPORT_TELEGRAM }}</a></p>{% endif %}
+  </div>
+</section>
+{% endblock %}

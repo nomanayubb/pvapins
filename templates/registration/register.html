@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block title %}Create account – {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<section class="wrap section"><div class="card auth">
+  <h1>Create your account</h1>
+  <form method="post">{% csrf_token %}
+    {{ form.non_field_errors }}
+    <label>Username{{ form.username }}{{ form.username.errors }}</label>
+    <label>Email{{ form.email }}{{ form.email.errors }}</label>
+    <label>Password{{ form.password1 }}{{ form.password1.errors }}</label>
+    <label>Confirm password{{ form.password2 }}{{ form.password2.errors }}</label>
+    <button class="btn block">Create account</button>
+  </form>
+  <p class="muted center">Already registered? <a href="{% url 'login' %}">Log in</a></p>
+</div></section>
+{% endblock %}

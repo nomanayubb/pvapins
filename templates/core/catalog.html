@@ -1,0 +1,58 @@
+{% extends "base.html" %}
+{% load money %}
+{% block title %}{% if rent %}Rent private numbers{% else %}Buy virtual numbers{% endif %} – {{ SITE_NAME }}{% endblock %}
+{% block content %}
+<section class="wrap section">
+  <h1>{% if rent %}Rent private numbers{% else %}Buy virtual numbers{% endif %}</h1>
+  <p class="muted">Pick a country, then the service you need a code for. Prices are in USD with the PKR amount next to it.</p>
+
+  {% if country %}
+  <form class="filters" method="get">
+    <label>Country
+      <select name="country" onchange="this.form.submit()">
+        {% for c in countries %}<option value="{{ c.id }}" {% if c.id == country.id %}selected{% endif %}>{{ c.name }}</option>{% endfor %}
+      </select>
+    </label>
+    <label>Search service
+      <input type="search" name="q" value="{{ q }}" placeholder="e.g. Telegram, Google, WhatsApp">
+    </label>
+    <label class="check"><input type="checkbox" name="trending" value="1" {% if trending %}checked{% endif %} onchange="this.form.submit()"> 🔥 Trending only</label>
+    <button class="btn btn-sm">Search</button>
+  </form>
+
+  <div class="muted small">{{ total }} service{{ total|pluralize }} in {{ country.name }}</div>
+  <div class="table-wrap">
+  <table class="table">
+    <thead><tr><th>Service</th><th class="r">Price</th><th class="r"></th></tr></thead>
+    <tbody>
+    {% for p in page %}
+      <tr>
+        <td>{{ p.name }}{% if p.trending %} <span class="badge">🔥 trending</span>{% endif %}</td>
+        <td class="r nowrap">{{ p.price|money }}</td>
+        <td class="r">
+          {% if user.is_authenticated %}
+          <form method="post" action="{% url 'place_order' %}" onsubmit="return confirm('Buy {{ p.name|escapejs }} ({{ country.name|escapejs }}) for ${{ p.price }}?')">
+            {% csrf_token %}
+            <input type="hidden" name="country" value="{{ country.id }}">
+            <input type="hidden" name="app" value="{{ p.id }}">
+            {% if rent %}<input type="hidden" name="rent" value="1">{% endif %}
+            <button class="btn btn-sm">{% if rent %}Rent{% else %}Buy{% endif %}</button>
+          </form>
+          {% else %}<a class="btn btn-sm btn-ghost" href="{% url 'login' %}?next={{ request.get_full_path|urlencode }}">Log in</a>{% endif %}
+        </td>
+      </tr>
+    {% empty %}<tr><td colspan="3" class="muted center">No services match.</td></tr>{% endfor %}
+    </tbody>
+  </table>
+  </div>
+
+  {% if page.paginator.num_pages > 1 %}
+  <div class="pager">
+    {% if page.has_previous %}<a class="btn btn-sm btn-ghost" href="?country={{ country.id }}&q={{ q|urlencode }}{% if trending %}&trending=1{% endif %}&page={{ page.previous_page_number }}">← Prev</a>{% endif %}
+    <span>Page {{ page.number }} of {{ page.paginator.num_pages }}</span>
+    {% if page.has_next %}<a class="btn btn-sm btn-ghost" href="?country={{ country.id }}&q={{ q|urlencode }}{% if trending %}&trending=1{% endif %}&page={{ page.next_page_number }}">Next →</a>{% endif %}
+  </div>
+  {% endif %}
+  {% endif %}
+</section>
+{% endblock %}
